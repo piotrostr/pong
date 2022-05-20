@@ -1,3 +1,3 @@
-# kuberenetes echo deployment
+# pong server
 
 messing around with kubernetes

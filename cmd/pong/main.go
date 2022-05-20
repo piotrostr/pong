@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/piotrostr/echo/pkg/server"
+	"github.com/piotrostr/pong/pkg/server"
 )
 
 func main() {

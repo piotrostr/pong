@@ -1,3 +1,3 @@
-module github.com/piotrostr/echo
+module github.com/piotrostr/pong
 
 go 1.18
