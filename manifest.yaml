@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pong-lb
+  labels:
+    name: pong
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    name: pong
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pong-deployment
+  labels:
+    name: pong-api
+spec:
+  selector:
+    matchLabels:
+      name: pong
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        name: pong
+    spec:
+      containers:
+        - name: pong-api
+          image: docker.io/piotrostr/pong
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+status: {}
