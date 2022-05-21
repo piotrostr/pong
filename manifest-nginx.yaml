@@ -6,6 +6,7 @@ metadata:
   annotations:
     ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  ingressClassName: nginx  # using nginx helm one
   rules:
     - host: localhost
       http:
