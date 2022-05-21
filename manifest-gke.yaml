@@ -8,13 +8,13 @@ spec:
   rules:
     - http:
         paths:
-          - path: /hello/
-            pathType: Prefix
+          - path: /
+            pathType: Exact
             backend:
               service:
                 name: pong-api
                 port:
-                  number: 8080
+                  number: 80
 ---
 apiVersion: v1
 kind: Service
@@ -23,7 +23,7 @@ metadata:
   namespace: default
 spec:
   ports:
-    - port: 8080
+    - port: 80
       protocol: TCP
       targetPort: 80
   selector:
@@ -51,6 +51,7 @@ spec:
           image: piotrostr/pong
           ports:
             - containerPort: 80
+              protocol: TCP
           resources: {}
       restartPolicy: Always
 status: {}
