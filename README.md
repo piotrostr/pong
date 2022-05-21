@@ -1,7 +1,7 @@
 # pong server
 
 Let's assume there is an API ready to be deployed and one decides to
-use the industry leading orchestrator - Kubernetes.
+use the industry leading orchestrating software - Kubernetes.
 
 Originating from Google, kubernetes in greek means helmsman or pilot and it
 serves exactly that purpose - commanding the fleet of, in this case,
@@ -21,8 +21,8 @@ to be deployed into production without any breaking changes.
 Generally, there is a number of ways of getting traffic into the kubernetes
 cluster, mostly depending on where it is to be deployed.
 
-1. locally using minikube or k3s
-
+1. Locally using minikube or k3s with port forwarding
+   
    ```sh
    kubectl create deployment [deployment] --image=piotrostr/pong
    kubectl expose deployment [deployment]
@@ -40,20 +40,30 @@ cluster, mostly depending on where it is to be deployed.
    with the local kubernetes api, but it is kind of hassleful compared to the
    other options below.
 
-2. Using Docker Desktop Kubernetes provider
+2. Using Docker Desktop Kubernetes provider (resources: 
+   [`manifest-docker.yaml`](https://github.com/piotrostr/pong/blob/master/manifest-docker.yaml))
 
    This is a nice one, as since docker-desktop uses vpnkit to expose any load
    balancers and forward traffic into the cluster.
-
+   
+   The manifest here only includes a load balancer service and the deployment
+   itself, no ingress included.
+   
+   Simply
+   
    ```sh
    kubectl apply -f manifest-docker.yaml
    ```
 
-   Making it ready to be `curl`'ed.
+   makes the application ready to be `curl`'ed.
 
-   I would say this is the go-to for debugging simple applications.
+   I would say this is the go-to for debugging simple applications, working like 
+   a charm with `skaffold dev`. 
+   
+   More on skaffold [here](https://github.com/GoogleContainerTools/skaffold).
 
-3. On Google Kubernetes Engine (EKS) [`manifest-gke.yaml`]
+3. On Google Kubernetes Engine (resources: 
+   [`manifest-gke.yaml`](https://github.com/piotrostr/pong/blob/master/manifest-gke.yaml))
 
    Note: requires the `gcloud` to be configured with the right project and GKE
    enabled.
@@ -92,26 +102,24 @@ cluster, mostly depending on where it is to be deployed.
    forward any traffic into the cluster.
 
 4. Using the [nginx](https://kubernetes.github.io/ingress-nginx/) ingress
-   [`manifest-nginx.yaml`]
+   (resources: [`manifest-nginx.yaml`](https://github.com/piotrostr/pong/blob/master/manifest-nginx.yaml))
 
-Install it with
+   Install it with
 
-```sh
-helm upgrade --install ingress-nginx ingress-nginx \
-  --repo https://kubernetes.github.io/ingress-nginx \
-  --namespace ingress-nginx --create-namespace
-```
+   ```sh
+   helm upgrade --install ingress-nginx ingress-nginx \
+     --repo https://kubernetes.github.io/ingress-nginx \
+     --namespace ingress-nginx --create-namespace
+   ```
 
-By including the same ingress resource as in the _3._ and adding
-`ingressClassName: nginx` under `spec` (in order to define which controller to
-use) it allows external traffic into the cluster and deployments without GKE or
-EKS (Elastic Kubernetes Service from AWS). This manifest can deployed on a
-single node cluster on an virtual machine quite easily, enabling one to benefit
-from the Kubernetes awesome features like auto-scaling and auto-healing while
-not being forced to use the AWS/GCP load balancing services and cluster costs,
-which can pile up for small applications.
+   By including the same ingress resource as in the _3._ and adding
+   `ingressClassName: nginx` under `spec` (in order to define which controller to
+   use) it allows external traffic into the cluster and deployments without GKE or
+   EKS (Elastic Kubernetes Service from AWS). This manifest can deployed on a
+   single node cluster on an virtual machine quite easily, enabling one to benefit
+   from the Kubernetes awesome features like auto-scaling and auto-healing while
+   not being forced to use the AWS/GCP load balancing services and cluster costs,
+   which can pile up for small applications.
 
-Every api call is distributed between the five pods (change `replicas` in the)
-
-Still, the preffered way should be to use GKE or EKS, since those offer
-autoscaling and automatical provisioning of nodes.
+   The nginx ingress is load balancing, meaning `curl` is distributed between the five pods 
+   (change `replicas` in the `manifest-nginx.yaml` to modify the pod number).
