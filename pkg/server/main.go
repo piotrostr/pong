@@ -7,6 +7,7 @@ import (
 )
 
 func index(w http.ResponseWriter, r *http.Request) {
+	log.Println(r.Method, r.URL.String(), r.UserAgent)
 	fmt.Fprintln(w, "pong")
 }
 
