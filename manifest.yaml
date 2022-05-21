@@ -42,7 +42,7 @@ spec:
   selector:
     matchLabels:
       name: pong
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
         - name: pong-api
-          image: docker.io/piotrostr/pong
+          image: piotrostr/pong
           ports:
             - containerPort: 80
           resources: {}

@@ -1,0 +1,13 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: pong
+build:
+  artifacts:
+  - image: docker.io/piotrostr/pong
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - manifest.yaml
