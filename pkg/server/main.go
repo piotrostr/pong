@@ -11,7 +11,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintln(w, "pong")
 }
 
-func RunServer() {
+func Run() {
 	log.Println("listening on 80")
 	http.HandleFunc("/", index)
 	if err := http.ListenAndServe(":http", nil); err != nil {
